@@ -1,0 +1,14 @@
+{
+  "name": "claude-ps-blog",
+  "description": "한국어 PS 블로그 작성 스킬 모음",
+  "owner": {
+    "name": "Ongdik"
+  },
+  "plugins": [
+    {
+      "name": "ps-solution-blog",
+      "source": "./",
+      "description": "알고리즘 풀이를 티스토리용 기술 블로그 글로 작성하고 발행 전 검사까지 하는 스킬"
+    }
+  ]
+}
