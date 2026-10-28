@@ -2,7 +2,7 @@
 """PS 블로그 글 발행 전 검사.
 
 banned-phrases.md의 표에 적힌 패턴과 Markdown 구조를 검사한다.
-외부 패키지 없이 Python 3.8 이상에서 동작한다.
+외부 패키지 없이 Python 3.10 이상에서 동작한다 (CI에서 3.10, 3.13으로 테스트).
 
 사용법:
     python3 check.py post.md

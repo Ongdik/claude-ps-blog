@@ -1,0 +1,30 @@
+name: release
+
+# v로 시작하는 태그를 푸시하면 claude.ai 업로드용 스킬 zip을 만들어 Release에 첨부한다.
+# 예: git tag v0.1.0 && git push origin v0.1.0
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 테스트
+        run: python3 -m unittest discover tests
+      - name: 스킬 zip 생성
+        run: |
+          mkdir -p dist
+          cd skills
+          zip -r ../dist/ps-solution-blog.zip ps-solution-blog -x '*/__pycache__/*' '*.pyc'
+      - name: Release 생성
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/ps-solution-blog.zip \
+            --title "$GITHUB_REF_NAME" --generate-notes
