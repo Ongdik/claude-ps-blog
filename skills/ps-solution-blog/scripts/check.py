@@ -144,6 +144,7 @@ HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 BOLD_RE = re.compile(r"\*\*[^*\n]+?\*\*")
 LIST_RE = re.compile(r"^([-*+]|\d+[.)])\s")
 REFLECTION_RE = re.compile(r"정리|돌아보|회고|느낀 ?점")
+MATH_LANGS = {"latex", "math", "tex", "katex"}
 FORMAL_END_RE = re.compile(r"니다[.!?](\s|$)")
 PLAIN_END_RE = re.compile(r"(?<!니)다[.!?](\s|$)")
 POLITE_END_RE = re.compile(r"(?<!까)(?<=[가-힣])요[.!?](\s|$)")  # "~까요?"는 합니다체 글에서도 쓰여 제외
@@ -171,6 +172,20 @@ def check_structure(lines: list[str], fences: list[tuple[int, str]]) -> list[Fin
         if not lang:
             found.append(Finding("S01", LEVEL_BAN, lineno, "```",
                                  "코드 블록에 언어 태그를 붙인다 (예: ```python)"))
+        elif lang.lower() in MATH_LANGS:
+            found.append(Finding("S08", LEVEL_WARN, lineno, "```" + lang,
+                                 "수식 유도는 빼고, 필요하면 결론만 문장으로 쓴다"))
+    in_math = False
+    for i, line in enumerate(lines, 1):
+        s = line.strip()
+        if not s.startswith("$$"):
+            continue
+        if not in_math:
+            found.append(Finding("S08", LEVEL_WARN, i, "$$",
+                                 "수식 유도는 빼고, 필요하면 결론만 문장으로 쓴다"))
+        # 한 줄짜리 $$...$$는 열고 닫음이 같은 줄에 있다
+        if not (len(s) > 2 and s.endswith("$$") and s != "$$"):
+            in_math = not in_math
 
     headings = [(i, len(m.group(1)), m.group(2))
                 for i, l in enumerate(lines, 1) if (m := HEADING_RE.match(l))]

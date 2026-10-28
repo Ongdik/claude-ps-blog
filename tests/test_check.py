@@ -52,7 +52,8 @@ class FixtureTest(unittest.TestCase):
         found = ids(self.run_fixture("bad.md"))
         expected = {"A01", "A03", "A07", "B01", "B03", "B04", "B07", "C01",
                     "D07", "E01", "F01", "G01", "G02", "G03", "G06", "G07",
-                    "S01", "S02", "S03", "S04", "S05", "S06", "S07"}
+                    "H01", "H02",
+                    "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08"}
         self.assertTrue(expected <= found, f"빠진 항목: {expected - found}")
 
 
@@ -93,6 +94,27 @@ class ReflectionTest(unittest.TestCase):
     def test_other_section_list_is_fine(self):
         text = "# 제목\n\n## 문제\n\n- 조건 하나다.\n- 조건 둘이다.\n"
         self.assertNotIn("S07", ids(check.run(text, self.rules)))
+
+
+class MathBlockTest(unittest.TestCase):
+    def setUp(self):
+        self.rules = check.load_rules(SKILL / "banned-phrases.md")
+
+    def count_s08(self, text):
+        return sum(1 for f in check.run(text, self.rules) if f.id == "S08")
+
+    def test_latex_fence_warns(self):
+        self.assertEqual(self.count_s08("# 제목\n\n```latex\nx = 1\n```\n"), 1)
+
+    def test_dollar_block_warns_once(self):
+        self.assertEqual(self.count_s08("# 제목\n\n$$\nx = 1\n$$\n"), 1)
+
+    def test_inline_dollar_block_warns_once(self):
+        text = "# 제목\n\n$$x = 1$$\n\n$$y = 2$$\n"
+        self.assertEqual(self.count_s08(text), 2)
+
+    def test_python_fence_is_fine(self):
+        self.assertEqual(self.count_s08("# 제목\n\n```python\nx = 1\n```\n"), 0)
 
 
 class ExitCodeTest(unittest.TestCase):
