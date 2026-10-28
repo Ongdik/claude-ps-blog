@@ -51,7 +51,8 @@ class FixtureTest(unittest.TestCase):
     def test_bad_post_hits_expected_rules(self):
         found = ids(self.run_fixture("bad.md"))
         expected = {"A01", "A03", "A07", "B01", "B03", "B04", "B07", "C01",
-                    "E01", "F01", "S01", "S02", "S03", "S04", "S05", "S06"}
+                    "D07", "E01", "F01", "G01", "G02", "G03", "G06", "G07",
+                    "S01", "S02", "S03", "S04", "S05", "S06", "S07"}
         self.assertTrue(expected <= found, f"빠진 항목: {expected - found}")
 
 
@@ -75,6 +76,23 @@ class MaskTest(unittest.TestCase):
         text = "# 제목\n\n```python\nx = 1\n```\n\n결론적으로 끝났다.\n"
         found = check.run(text, self.rules)
         self.assertEqual([(f.id, f.line) for f in found], [("A05", 7)])
+
+
+class ReflectionTest(unittest.TestCase):
+    def setUp(self):
+        self.rules = check.load_rules(SKILL / "banned-phrases.md")
+
+    def test_list_only_reflection_warns(self):
+        text = "# 제목\n\n## 정리\n\n- 첫째다.\n- 둘째다.\n"
+        self.assertIn("S07", ids(check.run(text, self.rules)))
+
+    def test_prose_reflection_passes(self):
+        text = "# 제목\n\n## 돌아보며\n\n처음엔 몰랐다.\n\n- 다음엔 set부터 본다.\n"
+        self.assertNotIn("S07", ids(check.run(text, self.rules)))
+
+    def test_other_section_list_is_fine(self):
+        text = "# 제목\n\n## 문제\n\n- 조건 하나다.\n- 조건 둘이다.\n"
+        self.assertNotIn("S07", ids(check.run(text, self.rules)))
 
 
 class ExitCodeTest(unittest.TestCase):

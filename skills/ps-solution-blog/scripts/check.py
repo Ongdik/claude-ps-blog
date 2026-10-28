@@ -142,6 +142,8 @@ def mask(text: str) -> tuple[list[str], list[tuple[int, str]]]:
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 BOLD_RE = re.compile(r"\*\*[^*\n]+?\*\*")
+LIST_RE = re.compile(r"^([-*+]|\d+[.)])\s")
+REFLECTION_RE = re.compile(r"정리|돌아보|회고|느낀 ?점")
 FORMAL_END_RE = re.compile(r"니다[.!?](\s|$)")
 PLAIN_END_RE = re.compile(r"(?<!니)다[.!?](\s|$)")
 POLITE_END_RE = re.compile(r"(?<!까)(?<=[가-힣])요[.!?](\s|$)")  # "~까요?"는 합니다체 글에서도 쓰여 제외
@@ -187,6 +189,16 @@ def check_structure(lines: list[str], fences: list[tuple[int, str]]) -> list[Fin
         if title.rstrip().endswith("?"):
             found.append(Finding("S06", LEVEL_WARN, i, title,
                                  "소제목을 질문이 아니라 내용을 나타내는 말로 쓴다"))
+
+    for idx, (i, level, title) in enumerate(headings):
+        if level != 2 or not REFLECTION_RE.search(title):
+            continue
+        end = next((h[0] for h in headings[idx + 1:] if h[1] <= 2), len(lines) + 1)
+        body = [l.strip() for l in lines[i:end - 1] if l.strip()]
+        items = [l for l in body if LIST_RE.match(l)]
+        if len(items) >= 2 and len(items) == len(body):
+            found.append(Finding("S07", LEVEL_WARN, i, title,
+                                 "정리를 목록 대신 사용자 목소리의 짧은 문단으로 쓴다"))
 
     para, start = [], 0
     for i, line in enumerate(lines + [""], 1):
