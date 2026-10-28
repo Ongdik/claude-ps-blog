@@ -1,0 +1,23 @@
+name: 스킬 동작 개선
+description: 글 구성, 문체 규칙, 출력 방식 등 SKILL.md 동작에 대한 제안이나 문제
+title: "[스킬] "
+labels: ["skill"]
+body:
+  - type: textarea
+    id: situation
+    attributes:
+      label: 상황
+      description: 어떤 문제를 어떤 입력으로 썼을 때 생긴 일인지
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: 현재 결과
+      description: 생성된 글의 해당 부분 (길면 일부만)
+  - type: textarea
+    id: wanted
+    attributes:
+      label: 원하는 결과
+    validations:
+      required: true

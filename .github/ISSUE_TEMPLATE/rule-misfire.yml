@@ -1,0 +1,34 @@
+name: 검사 오탐·미탐
+description: 검사 스크립트가 잘못 걸었거나, 걸려야 할 표현을 놓친 경우
+title: "[검사] "
+labels: ["rule", "bug"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 유형
+      options:
+        - 오탐 (괜찮은 문장이 걸림)
+        - 미탐 (걸려야 할 문장이 안 걸림)
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: 관련 규칙 ID
+      description: 검사 결과에 나온 ID (예 D03). 미탐이면 비워도 된다.
+  - type: textarea
+    id: sentence
+    attributes:
+      label: 문장
+      description: 문제가 된 문장을 그대로 붙여 넣는다.
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대한 결과
+      description: 어떻게 판정되어야 하는지와 그 이유
+    validations:
+      required: true

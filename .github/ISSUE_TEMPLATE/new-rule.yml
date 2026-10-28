@@ -1,0 +1,53 @@
+name: 금지 표현 추가 제안
+description: banned-phrases.md에 새 표현을 추가하자는 제안
+title: "[규칙] "
+labels: ["rule", "enhancement"]
+body:
+  - type: input
+    id: phrase
+    attributes:
+      label: 표현
+      placeholder: 예) ~라는 점에서 의미가 있다
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: 분류
+      options:
+        - A. 도입·마무리 상투구
+        - B. 과장·강조
+        - C. 반전·수사 구조
+        - D. 메타 서술·번역투
+        - E. 자기비하
+        - F. 형식
+        - 새 분류
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: 제안 수준
+      options:
+        - 금지
+        - 주의
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: 걸려야 할 문장 / 걸리면 안 되는 문장
+      description: 각각 1개 이상. 테스트 픽스처에 그대로 쓴다.
+      value: |
+        걸려야 함:
+        -
+
+        걸리면 안 됨:
+        -
+    validations:
+      required: true
+  - type: input
+    id: alternative
+    attributes:
+      label: 대안
+      description: 이 표현 대신 어떻게 쓰면 되는지

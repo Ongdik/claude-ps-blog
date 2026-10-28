@@ -1,0 +1,22 @@
+# 이슈 라벨 목록. GitHub 레포 설정과 맞춰 둔다.
+- name: rule
+  color: "5319e7"
+  description: 금지 표현 목록, 검사 규칙
+- name: skill
+  color: "0e8a16"
+  description: SKILL.md 동작, 글 구성, 문체
+- name: script
+  color: "1d76db"
+  description: check.py 검사 스크립트
+- name: docs
+  color: "c5def5"
+  description: README, 기여 가이드 등 문서
+- name: bug
+  color: "d73a4a"
+  description: 잘못 동작함
+- name: enhancement
+  color: "a2eeef"
+  description: 새 기능이나 개선
+- name: question
+  color: "d876e3"
+  description: 질문
