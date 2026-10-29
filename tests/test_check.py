@@ -52,7 +52,7 @@ class FixtureTest(unittest.TestCase):
         found = ids(self.run_fixture("bad.md"))
         expected = {"A01", "A03", "A07", "B01", "B03", "B04", "B07", "C01",
                     "D07", "E01", "F01", "G01", "G02", "G03", "G06", "G07",
-                    "D08", "G08", "H01", "H02",
+                    "D08", "G08", "G09", "H01", "H02",
                     "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09"}
         self.assertTrue(expected <= found, f"빠진 항목: {expected - found}")
 
