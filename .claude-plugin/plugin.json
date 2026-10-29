@@ -1,7 +1,7 @@
 {
   "name": "ps-solution-blog",
   "description": "알고리즘 풀이(PS)를 티스토리용 한국어 기술 블로그 글로 작성·검토하는 스킬. 한국어 AI 말투 금지 표현 목록과 발행 전 검사 스크립트 포함.",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": {
     "name": "Ongdik"
   },
