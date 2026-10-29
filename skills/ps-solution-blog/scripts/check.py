@@ -113,7 +113,9 @@ def blank(s: str) -> str:
 
 
 def mask(text: str) -> tuple[list[str], list[tuple[int, str]]]:
-    """코드 블록, 인라인 코드, HTML 주석을 공백으로 바꾼다.
+    """코드 블록, 인라인 코드, HTML 주석, 인용(>) 줄을 공백으로 바꾼다.
+
+    인용은 문제 원문처럼 사용자가 쓰지 않은 글을 넣는 자리라 검사하지 않는다.
 
     줄 번호를 유지하기 위해 줄 수는 그대로 둔다.
     반환값: (가린 줄 목록, [(코드 블록 시작 줄, 언어 태그)])
@@ -134,6 +136,9 @@ def mask(text: str) -> tuple[list[str], list[tuple[int, str]]]:
                 fence = None
             out.append("")
             continue
+        if line.lstrip().startswith(">"):
+            out.append("")
+            continue
         out.append(INLINE_CODE_RE.sub(lambda mm: blank(mm.group(0)), line))
     return out, fences
 
@@ -145,6 +150,7 @@ BOLD_RE = re.compile(r"\*\*[^*\n]+?\*\*")
 LIST_RE = re.compile(r"^([-*+]|\d+[.)])\s")
 REFLECTION_RE = re.compile(r"정리|돌아보|회고|느낀 ?점")
 MATH_LANGS = {"latex", "math", "tex", "katex"}
+SUBTITLE_RE = re.compile(r"\s[-–—:|]\s")
 FORMAL_END_RE = re.compile(r"니다[.!?](\s|$)")
 PLAIN_END_RE = re.compile(r"(?<!니)다[.!?](\s|$)")
 POLITE_END_RE = re.compile(r"(?<!까)(?<=[가-힣])요[.!?](\s|$)")  # "~까요?"는 합니다체 글에서도 쓰여 제외
@@ -194,6 +200,9 @@ def check_structure(lines: list[str], fences: list[tuple[int, str]]) -> list[Fin
         line = h1[1][0] if len(h1) > 1 else 1
         found.append(Finding("S02", LEVEL_BAN, line, f"# 제목 {len(h1)}개",
                              "# 제목은 글 맨 위에 하나만 둔다"))
+    if h1 and SUBTITLE_RE.search(h1[0][2]):
+        found.append(Finding("S09", LEVEL_WARN, h1[0][0], h1[0][2],
+                             "제목에는 [플랫폼 번호] 문제 이름만 쓴다. 막힌 내용은 돌아보며에 쓴다"))
 
     prev = 0
     for i, level, title in headings:
